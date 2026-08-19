@@ -1,0 +1,21 @@
+﻿# 학습 로그 / 대용량 산출물
+*.log
+logs/
+*.tar.gz
+*.zip
+
+# 실차 모델 파일 (용량 큼, 각자 콘솔에서 내려받을 것)
+*.pb
+checkpoint*
+model_metadata.json
+
+# OS / 편집기
+Thumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
