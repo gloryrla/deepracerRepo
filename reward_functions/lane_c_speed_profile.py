@@ -31,9 +31,14 @@ TUNING: change ONE value between runs.
     - enters corners hot / runs wide  -> k = 8 (brake earlier)
     - slows down far too early        -> k = 5
 CAP must match the action space maximum speed:
-    C-v2 max 2.4 -> targets 2.4 / 2.0 / 1.7 / 1.4
-    C-v1 max 2.6 -> targets 2.6 / 2.2 / 1.8 / 1.5   (this file)
-    C-v3 max 2.8 -> targets 2.8 / 2.3 / 1.9 / 1.5
+    C-v2 max 2.4 -> targets 2.4 / 2.1 / 1.9 / 1.8
+    C-v1 max 2.6 -> targets 2.6 / 2.2 / 2.0 / 1.9   (this file)
+    C-v3 max 2.8 -> targets 2.8 / 2.4 / 2.1 / 1.9
+
+SLOW TIER RAISED (2026-08-19).  The slowest target used to be 1.5 m/s, which is
+well below what the geometry requires: the physical cornering limit is 2.18 m/s
+on the racing line and about 1.9 m/s even on the centreline. The old value
+trained the car to brake harder than necessary and capped its lap time.
 
 Action space (discrete, 12 actions):
     -28/1.4  -20/1.6  -14/1.9  -8/2.2  -4/2.4  0/CAP
@@ -73,9 +78,9 @@ def reward_function(params):
     elif turn < 35:
         target = 2.2
     elif turn < 52:
-        target = 1.8
+        target = 2.0
     else:
-        target = 1.5
+        target = 1.9
 
     # 1.0 when the speed matches the target exactly, decaying either side
     reward = math.exp(-1.2 * abs(speed - target))
