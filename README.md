@@ -101,7 +101,7 @@ B·C는 각각 **최고 속도만 다른 3개 스윕**이다 → 완주율이 �
 
 | 항목 | 값 |
 | :--- | :--- |
-| 트랙 | **A to Z Speedway** (내부명 `reInvent2019_wide`, 16.64m × 107cm) — 실측 확정 (흰선 사이 1m 초과) |
+| 트랙 | **A to Z Speedway** (내부명 `reInvent2019_wide`, 16.64m × 107cm) — 실측 확정. 흰선 안쪽 사이는 99~101cm로 재짐(선 두께 제외분) |
 | 채점 | **2개 모델의 평균 시간** (Best Lap 아님) |
 | 차량 | 모노 카메라 1대, LiDAR 없음 |
 | 탈선 페널티 | 리셋 중 **시계 정지** + 1초 → 실비용 약 2초 |
@@ -155,7 +155,7 @@ Import로 모델을 주고받으려면 아래가 팀 전체에서 같아야 한�
 | 자료 | 위치 | 용도 |
 | :--- | :--- | :--- |
 | **A to Z 센터라인 waypoint** (110점) | [log-guru `a_to_z_speedway_track.py`](https://github.com/aws-deepracer-community/deepracer-log-guru/blob/master/src/tracks/a_to_z_speedway_track.py) | 레이싱 라인 계산 입력. 길이 16.635m로 스펙 검증 완료 |
-| **A to Z K1999 레이싱 라인** (110점) | 위 waypoint로 **직접 계산** → `lane_b_racing_line.py`에 삽입 완료 | 곡률 균등화 100회, 최소 반경 0.61→0.78m |
+| **A to Z K1999 레이싱 라인** (110점) | 위 waypoint로 **직접 계산** → `lane_b_racing_line.py`에 삽입 완료 | 곡률 균등화 1500회, 길이 16.635→15.409m, 최소 반경 0.61→0.79m |
 | K1999 알고리즘 참고 | [cdthompson/deepracer-k1999-race-lines](https://github.com/cdthompson/deepracer-k1999-race-lines) | 방법론 참고 (해당 좌표는 re:Invent 2018 전용이라 사용 불가) |
 | 구간별 최적 속도 · 액션 스페이스 계산 | [dgnzlz/Capstone_AWS_DeepRacer](https://github.com/dgnzlz/Capstone_AWS_DeepRacer) → `Compute_Speed_And_Actions/` | 레인 C 목표 속도를 계산값으로 교체 |
 | 실차 우승 보상함수 레퍼런스 | [poponuts/aws-deepracer-model](https://github.com/poponuts/aws-deepracer-model) | 비교 기준. 최고 2.0 m/s에서 11초대 |
