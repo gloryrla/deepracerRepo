@@ -56,21 +56,25 @@
 등록·업로드는 각자 하면 되는 일이라 역할 분담(직책)은 두지 않는다.
 대신 **4명이 서로 다른 가설**을 맡고 실차 테스트로 승자를 고른다.
 
-| 레인 | 검증할 가설 | 보상 함수 |
-| :--- | :--- | :--- |
-| **A** 보험 | 확실히 완주하는 기록을 먼저 확보한다 | [lane_a_centerline.py](reward_functions/lane_a_centerline.py) |
-| **B** 본진 | 최적 궤적이 랩타임을 만든다 | [lane_b_racing_line.py](reward_functions/lane_b_racing_line.py) |
-| **C** 공격 | 궤적보다 감가속 타이밍이 랩타임을 만든다 | [lane_c_speed_profile.py](reward_functions/lane_c_speed_profile.py) |
-| **D** 헤지 | 시뮬 1등이 실차 1등이 아니다 | [lane_d_wobble.py](reward_functions/lane_d_wobble.py) |
+| 레인 | 검증할 가설 | 캡 | 보상 함수 |
+| :--- | :--- | :--- | :--- |
+| **A** 기준선 | 단순·안정이 이긴다 | 2.2 | [lane_a_centerline.py](reward_functions/lane_a_centerline.py) |
+| **B** 레이싱 라인 | 최적 궤적이 랩타임을 만든다 | 2.4 / 2.6 | [lane_b_racing_line.py](reward_functions/lane_b_racing_line.py) |
+| **C** 속도 프로파일 | 감가속 타이밍이 랩타임을 만든다 | 2.4 / 2.6 | [lane_c_speed_profile.py](reward_functions/lane_c_speed_profile.py) |
+| **D** 워블 억제 | 실차 일관성이 이긴다 | 2.2 | [lane_d_wobble.py](reward_functions/lane_d_wobble.py) |
+
+> A는 더 이상 "보험"이 아니다. 평균 채점에서는 느린 모델이 성적을 깎으므로 정식 후보다.
 
 > **가장 큰 낭비는 4명이 같은 보상 함수의 숫자만 조금씩 바꿔 돌리는 것이다.**
 > 4배 자원을 쓰고 1인분의 정보만 남는다.
 
 ---
 
-## 8/19 야간에 걸어둔 모델 8개
+## ~~8/19 야간에 걸어둔 모델 8개~~ (폐기)
 
-전부 `Queued` 상태. 상세 설정은 **[docs/created_models_log.md](docs/created_models_log.md)** 참조.
+**계정 문제로 새 계정을 받게 되어 아래 8개는 전부 폐기됐다.** 게다가 re:Invent 2018 기준으로
+만들어져 트랙도 틀렸다. 새 계정에서는 [plans/atoz_design.md](plans/atoz_design.md)의
+개정된 6개 구성으로 다시 만든다. 아래는 설정 참고용 기록으로만 남긴다.
 
 | 모델 | 레인 | 액션 | 최고 속도 | 학습 |
 | :--- | :--- | :--- | :--- | :--- |
@@ -138,8 +142,9 @@ Import로 모델을 주고받으려면 아래가 팀 전체에서 같아야 한�
 4. **보상 함수는 PEP8 검사를 통과해야 한다** — 함수 정의 앞에 **빈 줄 2개** 필수
    (`expected 2 blank lines, found 1` 오류).
 5. **트랙 검색은 `2018`로** 해야 찾아진다 (`Invent`, `re:Invent 2018`은 0건).
-6. **A to Z Speedway가 잘못 선택되기 쉽다** — 그 카드 설명에 "extra wide version of re:Invent 2018"이
-   들어있어 검색이 오인한다. 길이 17.6m·폭 76cm 표시를 꼭 확인할 것.
+6. **트랙 검색은 `A to Z`로** 하고, **길이 16.64m · 폭 107cm** 표시를 꼭 확인할 것.
+   `2018`로 검색하면 re:Invent 2018(17.6m·76cm)이 나오는데 **그건 우리 트랙이 아니다.**
+   두 카드는 모양이 같아 썸네일로는 구분이 안 된다.
 7. `Actions → Clone`은 **학습이 끝난 뒤에만** 활성화된다.
 8. 실차용 파일은 `Actions → Download physical car model`.
 
@@ -149,9 +154,9 @@ Import로 모델을 주고받으려면 아래가 팀 전체에서 같아야 한�
 
 | 자료 | 위치 | 용도 |
 | :--- | :--- | :--- |
-| **K1999 최적 레이싱 라인** (71점) | [cdthompson/deepracer-k1999-race-lines](https://github.com/cdthompson/deepracer-k1999-race-lines) → `racelines/reinvent_base-400-4-2019-10-11-161903.py` | 레인 B 보상함수에 삽입 완료 |
-| 트랙 waypoint 원본 (119점 × 6열) | [reinvent_base.npy](https://raw.githubusercontent.com/aws-solutions-library-samples/guidance-for-training-an-aws-deepracer-model-using-amazon-sagemaker/master/log-analysis/tracks/reinvent_base.npy) | 레이싱 라인 재계산, 로그 분석 |
-| 레이싱 라인 계산 노트북 | cdthompson → `Race-Line-Calculation.ipynb` | 더 공격적인 라인 재산출 |
+| **A to Z 센터라인 waypoint** (110점) | [log-guru `a_to_z_speedway_track.py`](https://github.com/aws-deepracer-community/deepracer-log-guru/blob/master/src/tracks/a_to_z_speedway_track.py) | 레이싱 라인 계산 입력. 길이 16.635m로 스펙 검증 완료 |
+| **A to Z K1999 레이싱 라인** (110점) | 위 waypoint로 **직접 계산** → `lane_b_racing_line.py`에 삽입 완료 | 곡률 균등화 100회, 최소 반경 0.61→0.78m |
+| K1999 알고리즘 참고 | [cdthompson/deepracer-k1999-race-lines](https://github.com/cdthompson/deepracer-k1999-race-lines) | 방법론 참고 (해당 좌표는 re:Invent 2018 전용이라 사용 불가) |
 | 구간별 최적 속도 · 액션 스페이스 계산 | [dgnzlz/Capstone_AWS_DeepRacer](https://github.com/dgnzlz/Capstone_AWS_DeepRacer) → `Compute_Speed_And_Actions/` | 레인 C 목표 속도를 계산값으로 교체 |
 | 실차 우승 보상함수 레퍼런스 | [poponuts/aws-deepracer-model](https://github.com/poponuts/aws-deepracer-model) | 비교 기준. 최고 2.0 m/s에서 11초대 |
 
@@ -165,14 +170,15 @@ Import로 모델을 주고받으려면 아래가 팀 전체에서 같아야 한�
 ```
 ├── README.md                        ← 이 파일
 ├── plans/
-│   └── day2_plan.md                 ← 내일 실행 계획 (가장 먼저 볼 것)
+│   ├── atoz_design.md               ← 설계 개정 (가장 먼저 볼 것)
+│   └── day2_plan.md                 ← 당일 진행 순서
 ├── reward_functions/                ← 콘솔에 복사해 붙일 수 있는 완성 코드
 │   ├── lane_a_centerline.py
 │   ├── lane_b_racing_line.py        ← K1999 좌표 71개 포함
 │   ├── lane_c_speed_profile.py
 │   └── lane_d_wobble.py
 ├── docs/
-│   ├── created_models_log.md        ← 8개 모델의 URL·액션 스페이스 전체 기록
+│   ├── created_models_log.md        ← 폐기된 구계정 모델 8개 기록 (참고용)
 │   ├── competition_overview.md
 │   ├── competition_knowledge.md
 │   ├── champion_strategies.md
