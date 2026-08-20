@@ -13,7 +13,7 @@
 | **[pdf/team_briefing.pdf](pdf/team_briefing.pdf)** | **팀원 배포용.** 처음 하는 사람도 이것만 보고 모델을 만들 수 있다. 레인별 입력표 + 콘솔 함정 |
 | **[plans/atoz_design.md](plans/atoz_design.md)** | 설계 근거. 계산 과정과 왜 이런 값인지 |
 
-보상 함수 코드는 **[reward_functions/](reward_functions/)** 에 5개 파일. 콘솔에 **파일 전체를 복사**해 붙여넣으면 된다.
+보상 함수 코드는 **[reward_functions/](reward_functions/)** 에 6개 파일. 콘솔에 **파일 전체를 복사**해 붙여넣으면 된다.
 
 ---
 
@@ -83,6 +83,7 @@
 | **C** 속도 프로파일 | 감가속 타이밍이 랩타임을 만든다 | 2.6 → 2.8 → 3.0 | [lane_c_speed_profile.py](reward_functions/lane_c_speed_profile.py) |
 | **D** 워블 억제 | 실차 일관성이 이긴다 | 2.2 | [lane_d_wobble.py](reward_functions/lane_d_wobble.py) |
 | **E** 궤적 매칭 | 위치와 속도를 함께 주면 가장 빠르다 | 2.6 → 2.8 | [lane_e_trajectory.py](reward_functions/lane_e_trajectory.py) |
+| **C+** C에 라인 추가 | C의 지그재그는 위치 신호가 없어서 생긴다 | 2.6 (C-v1 유지) | [lane_c_plus_line.py](reward_functions/lane_c_plus_line.py) |
 
 **하루밖에 없으므로 A와 E를 먼저 건다** — A는 가장 빨리 수렴하고, E는 상한이 가장 높다.
 D는 오후 실차에서 워블이 관측된 뒤에 만든다. 자세한 우선순위는
@@ -195,6 +196,7 @@ log-guru의 A to Z 센터라인 웨이포인트 110개(길이 16.635 m로 스펙
 │   ├── lane_a_centerline.py
 │   ├── lane_b_racing_line.py        ← A to Z 레이싱 라인 110점
 │   ├── lane_c_speed_profile.py
+│   ├── lane_c_plus_line.py          ← C의 속도 로직 + 레이싱 라인 (지그재그 대응)
 │   ├── lane_d_wobble.py
 │   └── lane_e_trajectory.py         ← 위치 + 목표속도 110점
 ├── pdf/
