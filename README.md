@@ -7,6 +7,9 @@
 
 ## 지금 가장 먼저 볼 것
 
+**[pdf/team_briefing.pdf](pdf/team_briefing.pdf)** — **팀원 배포용 브리핑.**
+처음 하는 사람도 이것만 보고 모델을 만들 수 있게 쓴 문서. 레인별 입력표와 콘솔 함정 6가지 포함.
+
 **[plans/atoz_design.md](plans/atoz_design.md)** — **2026-08-19 밤 설계 개정.**
 트랙이 **A to Z Speedway**로 확정되고 채점이 **2개 모델 평균 시간**으로 바뀌었다.
 아래 내용 중 승리 공식과 레인 캡은 이 문서가 우선한다.
@@ -185,8 +188,8 @@ Import로 모델을 주고받으려면 아래가 팀 전체에서 같아야 한�
 │   ├── reward_functions.md
 │   ├── action_space_and_hyperparams.md
 │   └── workflow_guide.md
-└── pdf/                             ← 팀 공유용 인쇄물
-    ├── race_operations_brief.pdf    ← 전체 전략 브리프
-    ├── lane_playbook.pdf            ← 레인별 설정·코드 상세
-    └── morning_checklist.pdf        ← 아침 판정 시트
+├── pdf/
+│   ├── team_briefing.pdf            ← 팀 공유용 브리핑 (현행)
+│   └── superseded/                  ← 구트랙·구규칙 기준 폐기본
+└── pdf_src/team_briefing.html       ← 브리핑 원본 (수정 후 재렌더)
 ```

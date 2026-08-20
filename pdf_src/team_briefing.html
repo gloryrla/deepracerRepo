@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<title>딥레이서 팀 브리핑</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+@page { size: A4; margin: 15mm 14mm 16mm; }
+:root{
+  --ink:#16202B; --ink2:#44526A; --ink3:#7A8798; --line:#D5DCE4;
+  --acc:#C2410C; --accs:#FDEDE4; --good:#15704A; --goods:#E2F1E9;
+  --warn:#8A6100; --warns:#FBF2DC; --bad:#B3261E; --bads:#FBE9E7;
+  --code:#F1F4F7;
+}
+*{box-sizing:border-box}
+html,body{background:#fff}
+body{color:var(--ink);margin:0;font-size:10pt;line-height:1.55;
+  font-family:"IBM Plex Sans KR","Malgun Gothic",sans-serif;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+h1,h2,h3,h4{font-family:"Do Hyeon","Malgun Gothic",sans-serif;font-weight:400;
+  line-height:1.24;margin:0;text-wrap:balance}
+h1{font-size:34pt} h2{font-size:15pt} h3{font-size:11.5pt} h4{font-size:10.5pt}
+p{margin:.45em 0}
+code{font-family:"IBM Plex Mono",monospace;background:var(--code);
+  padding:.08em .35em;border-radius:3px;font-size:.88em}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+.cover{height:246mm;display:flex;flex-direction:column;page-break-after:always}
+.ctop{border-bottom:3.5pt solid var(--ink);padding-bottom:7mm}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:8pt;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--acc);font-weight:600;margin-bottom:4mm}
+.csub{color:var(--ink2);font-size:12pt;margin-top:5mm;max-width:120mm}
+.cmid{flex:1;display:flex;flex-direction:column;justify-content:center;gap:7mm}
+.hero{background:var(--ink);color:#fff;padding:7mm 8mm;border-left:2.5mm solid var(--acc)}
+.hero .big{font-family:"Do Hyeon",sans-serif;font-size:19pt;line-height:1.3}
+.hero .sm{font-size:9.5pt;color:#C3CDD8;margin-top:3mm}
+.fg{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm}
+.f{border-top:1.5pt solid var(--line);padding-top:2.5mm}
+.f .k{font-family:"IBM Plex Mono",monospace;font-size:7pt;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink3)}
+.f .v{font-family:"Do Hyeon",sans-serif;font-size:12pt;margin-top:.8mm}
+.f .n{font-size:8pt;color:var(--ink3);margin-top:.5mm}
+.toc{border-top:1.5pt solid var(--line);padding-top:4mm}
+.toc ol{list-style:none;padding:0;margin:0;columns:2;column-gap:9mm;font-size:9.5pt}
+.toc li{margin:1mm 0;color:var(--ink2);break-inside:avoid}
+.toc .n{font-family:"IBM Plex Mono",monospace;color:var(--acc);font-weight:600;margin-right:2mm}
+
+section{break-before:page}
+section.cont{break-before:auto;margin-top:8mm}
+.sh{display:flex;align-items:baseline;gap:4mm;border-bottom:2pt solid var(--ink);
+  padding-bottom:2.5mm;margin-bottom:4.5mm;break-after:avoid}
+.sn{font-family:"IBM Plex Mono",monospace;color:var(--acc);font-weight:600;font-size:10pt}
+
+table{border-collapse:collapse;width:100%;font-size:8.8pt;margin:3mm 0;break-inside:avoid}
+th,td{border:.7pt solid var(--line);padding:2mm 2.6mm;text-align:left;vertical-align:top}
+th{background:var(--code);font-weight:700}
+td.n,th.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.hi td{background:var(--goods)}
+
+.card{border:.8pt solid var(--line);border-radius:2mm;padding:4mm 4.5mm;margin:3mm 0;break-inside:avoid}
+.card h4{margin-bottom:1.2mm}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:3.5mm}
+.g2 .card{margin:0}
+
+.box{border-radius:2mm;padding:3.5mm 4.5mm;margin:3.5mm 0;font-size:9.3pt;break-inside:avoid}
+.box.g{background:var(--goods);border-left:1.2mm solid var(--good)}
+.box.w{background:var(--warns);border-left:1.2mm solid var(--warn)}
+.box.b{background:var(--bads);border-left:1.2mm solid var(--bad)}
+.box.a{background:var(--accs);border-left:1.2mm solid var(--acc)}
+.box.g b{color:var(--good)} .box.w b{color:var(--warn)}
+.box.b b{color:var(--bad)} .box.a b{color:var(--acc)}
+
+.pill{display:inline-block;font-size:7.2pt;font-weight:700;letter-spacing:.05em;
+  padding:.4mm 2mm;border-radius:99px;vertical-align:.4mm}
+.pill.g{background:var(--goods);color:var(--good)}
+.pill.w{background:var(--warns);color:var(--warn)}
+.pill.b{background:var(--bads);color:var(--bad)}
+.pill.a{background:var(--accs);color:var(--acc)}
+
+ul,ol{padding-left:5mm;margin:1.5mm 0}
+li{margin:1mm 0}
+li::marker{color:var(--acc)}
+.step{display:flex;gap:3.5mm;margin:2.5mm 0;break-inside:avoid}
+.step .b{flex:0 0 auto;width:6mm;height:6mm;border-radius:50%;background:var(--acc);
+  color:#fff;font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:8pt;
+  display:flex;align-items:center;justify-content:center;margin-top:.6mm}
+.ftr{margin-top:9mm;padding-top:2.5mm;border-top:.8pt solid var(--line);
+  color:var(--ink3);font-size:8pt}
+.lead{font-size:10.5pt;color:var(--ink2)}
+</style></head><body>
+
+<div class="cover">
+  <div class="ctop">
+    <div class="eyebrow">Team Briefing &middot; 2026.08.19 개정 &middot; v5</div>
+    <h1>딥레이서 팀 브리핑</h1>
+    <p class="csub">경북대 &times; 전남대 Physical AI 경진대회. 트랙과 채점 방식이 확정되어 설계를 전면 개정했습니다.
+    처음 하시는 분도 이 문서만 따라가면 모델을 만들 수 있습니다.</p>
+  </div>
+  <div class="cmid">
+    <div class="hero">
+      <div class="big">성적 = (모델1 시간 + 모델2 시간) &divide; 2</div>
+      <div class="sm">Best Lap이 아니라 <b style="color:#FFB088">평균</b>입니다. 버릴 수 있는 주행이 없으므로
+      두 모델 모두 좋아야 합니다. 표준 출발 단일 랩, 탈선 시 1초 추가 후 재배치.</div>
+    </div>
+    <div class="fg">
+      <div class="f"><div class="k">트랙</div><div class="v">A to Z Speedway</div><div class="n">16.64 m &times; 107 cm</div></div>
+      <div class="f"><div class="k">본선</div><div class="v">8/21 (금)</div><div class="n">10:00 &ndash; 12:00</div></div>
+      <div class="f"><div class="k">차량</div><div class="v">모노 카메라</div><div class="n">LiDAR 없음</div></div>
+      <div class="f"><div class="k">방침</div><div class="v">최대한 공격적</div><div class="n">안 나가는 선에서</div></div>
+      <div class="f"><div class="k">레인</div><div class="v">5개 가설</div><div class="n">각자 하나씩</div></div>
+      <div class="f"><div class="k">목표</div><div class="v">평균 9초 이내</div><div class="n">도전 8초</div></div>
+    </div>
+    <div class="toc">
+      <ol>
+        <li><span class="n">01</span>먼저 이것만 이해하면 됩니다</li>
+        <li><span class="n">02</span>왜 &ldquo;최대한 공격적&rdquo;이 정답인가</li>
+        <li><span class="n">03</span>5개 레인 &mdash; 누가 무엇을 맡는가</li>
+        <li><span class="n">04</span>액션 스페이스란 무엇인가</li>
+        <li><span class="n">05</span>레인별 입력표 (그대로 타이핑)</li>
+        <li><span class="n">06</span>콘솔 조작 순서와 함정</li>
+        <li><span class="n">07</span>당일 진행과 판정</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<section class="cont">
+  <div class="sh"><span class="sn">01</span><h2>먼저 이것만 이해하면 됩니다</h2></div>
+
+  <p class="lead">강화학습은 <b>정답을 알려주지 않고 점수만 주고 스스로 배우게</b> 하는 방법입니다.
+  우리는 차에게 &ldquo;어떻게 운전하라&rdquo;를 가르치지 않습니다. <b>&ldquo;무엇이 좋은 것인지&rdquo;만 정의</b>하고,
+  나머지는 차가 수십만 번의 시행착오로 찾아냅니다.</p>
+
+  <div class="g2">
+    <div class="card"><h4>우리가 정의하는 것 2개</h4>
+      <p><b>&#9312; 액션 스페이스</b> &mdash; 차가 고를 수 있는 (조향각, 속도) 선택지 목록<br>
+      <b>&#9313; 보상 함수</b> &mdash; 무엇을 잘한 것으로 볼지 정하는 파이썬 코드</p>
+      <p style="margin-top:2mm;color:var(--ink2)">이 둘만 우리가 만들고, 나머지는 콘솔 설정입니다.</p>
+    </div>
+    <div class="card"><h4>차가 하는 일</h4>
+      <p>초당 약 15번, 카메라 화면을 보고 <b>목록에서 한 줄을 고릅니다.</b>
+      좋은 점수를 받은 선택은 더 자주, 나쁜 점수는 덜 하게 됩니다.</p>
+      <p style="margin-top:2mm;color:var(--ink2)">목록에 없는 조합은 <b>아예 못 합니다.</b> 이게 중요합니다.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:5mm">이번 대회의 규칙이 전략을 결정합니다</h3>
+  <table>
+    <tr><th style="width:30%">규칙</th><th>우리에게 의미하는 것</th></tr>
+    <tr><td><b>2개 모델의 평균 시간</b></td>
+        <td><b>보험 모델이라는 개념이 없습니다.</b> 예전 규칙(Best Lap)이라면 하나는 안전하게,
+        하나는 공격적으로 가는 게 정답이었습니다. 지금은 느린 모델이 성적을 그대로 깎는
+        <b>부채</b>입니다. 두 모델 다 좋아야 합니다.</td></tr>
+    <tr><td><b>표준 출발 단일 랩</b></td>
+        <td>정지 상태에서 출발해 딱 한 바퀴. 가속 손실이 <b>0.5~0.7초</b> 발생합니다.
+        여러 바퀴 돌아서 잘 나온 것을 고르는 방식이 아닙니다.</td></tr>
+    <tr><td><b>탈선 = 1초 + 재배치</b></td>
+        <td>차를 다시 놓으면 정지 상태에서 다시 가속해야 하므로,
+        실제 손실은 <b>1초 + 약 0.8초 = 약 1.8초</b>입니다.</td></tr>
+  </table>
+
+  <div class="box b"><b>딱 하나 절대 안 되는 것: 완주 실패.</b>
+  탈선은 1.8초를 내면 되는 거래입니다. 하지만 <b>한 바퀴를 못 끝내면</b> 평균 채점에서 성적이
+  파괴됩니다. 공격의 상한선은 &ldquo;탈선 0회&rdquo;가 아니라 <b>&ldquo;절대 못 끝내지 않는 것&rdquo;</b>입니다.</div>
+</section>
+
+<section>
+  <div class="sh"><span class="sn">02</span><h2>왜 &ldquo;최대한 공격적&rdquo;이 정답인가</h2></div>
+
+  <p class="lead">감이 아니라 계산으로 확인했습니다. 결론부터: <b>5회 평가에서 5번 다 완주하는
+  가장 높은 속도</b>가 수학적 최적해입니다. 별도로 몸을 사릴 필요가 없습니다.</p>
+
+  <p>속도 캡을 한 단계 올리면 랩타임이 줄지만 탈선 위험이 올라갑니다. 그 손익을 따졌습니다.
+  (알려진 실차 우승 페이스에 맞춰 보정한 추정치이며, 탈선 비용 1.8초 기준)</p>
+
+  <table>
+    <tr><th class="n">최고 속도</th><th class="n">추정 랩타임</th><th class="n">이전 단계 대비</th><th>손익분기</th></tr>
+    <tr><td class="n">2.0</td><td class="n">10.13초</td><td class="n">&mdash;</td><td>&mdash;</td></tr>
+    <tr><td class="n">2.2</td><td class="n">9.33초</td><td class="n">+0.80초</td><td>탈선 <b>0.45회</b>까지 남는 장사</td></tr>
+    <tr><td class="n">2.4</td><td class="n">8.69초</td><td class="n">+0.64초</td><td>탈선 <b>0.35회</b>까지</td></tr>
+    <tr class="hi"><td class="n">2.6</td><td class="n">8.19초</td><td class="n">+0.50초</td><td>탈선 <b>0.28회</b>까지</td></tr>
+    <tr class="hi"><td class="n">2.8</td><td class="n">7.79초</td><td class="n">+0.40초</td><td>탈선 <b>0.22회</b>까지</td></tr>
+    <tr><td class="n">3.0</td><td class="n">7.48초</td><td class="n">+0.31초</td><td>탈선 <b>0.17회</b>까지</td></tr>
+  </table>
+
+  <div class="box g"><b>5회 평가 전부 완주 = 탈선 확률 0.2 이하입니다.</b>
+  손익분기가 매 단계 0.17~0.45회이므로, <b>5/5를 유지하는 한 속도를 올리는 것은 항상 이득</b>입니다.</div>
+
+  <h3 style="margin-top:5mm">그래서 속도는 사다리로 올립니다</h3>
+  <div class="card" style="background:var(--code);border:none">
+    <p class="mono" style="font-size:10pt;text-align:center;margin:0">
+    2.4 &rarr; 5/5 통과 &rarr; 2.6 &rarr; 통과 &rarr; 2.8 &rarr; 통과 &rarr; 3.0 &rarr; <b>깨지는 지점이 시뮬 상한</b></p>
+  </div>
+  <p><b>실차에서는 그 상한에서 한 단계 내려서 시작합니다.</b> 시뮬레이터에는 없는 것들이
+  실제 차에는 있기 때문입니다 &mdash; 서보 반응 지연, 타이어 미끄러짐, 조명 변화, 배터리 전압 강하.
+  시뮬 완주율 100%는 실차 완주를 보증하지 않습니다.</p>
+
+  <div class="box w"><b>목표는 평균 9초, 도전 8초입니다.</b>
+  알려진 실차 우승 페이스를 이 트랙으로 환산하면 약 10.1초입니다. 8초는 그보다 27% 빨라야
+  하므로 <b>탈선 0회를 전제</b>합니다. 9초는 탈선 1회를 감수해도 도달 가능한 현실적 목표입니다.</div>
+</section>
+
+<section>
+  <div class="sh"><span class="sn">03</span><h2>5개 레인 &mdash; 누가 무엇을 맡는가</h2></div>
+
+  <p class="lead">5명이 <b>서로 다른 가설</b>을 하나씩 맡습니다. 이건 분업이 아니라
+  <b>베팅 분산</b>입니다. 어느 접근이 실차에서 통할지 미리 알 수 없으니 병렬로 검증하고,
+  실차 테스트로 상위 2개를 골라 본선에 올립니다.</p>
+
+  <div class="box b"><b>가장 큰 낭비는 5명이 같은 보상 함수의 숫자만 조금씩 바꿔 돌리는 것입니다.</b>
+  5배 자원을 쓰고 1인분의 정보만 남습니다. 반드시 서로 다른 가설을 맡아주세요.</div>
+
+  <table>
+    <tr><th style="width:14%">레인</th><th style="width:24%">검증할 가설</th><th>어떻게</th><th class="n" style="width:14%">속도 사다리</th></tr>
+    <tr><td><b>A</b> 중앙선<br><span class="pill g">기준선</span></td>
+        <td>단순하고 안정적인 게 이긴다</td>
+        <td>트랙 중앙에 가까울수록 점수. 속도 보상 없음 &mdash;
+        속도는 액션 스페이스로만 통제. <b>가장 빨리 수렴</b>하므로 팀의 기준점이 됩니다.</td>
+        <td class="n">2.2</td></tr>
+    <tr><td><b>B</b> 레이싱 라인<br><span class="pill a">경로</span></td>
+        <td>최적 궤적이 랩타임을 만든다</td>
+        <td>미리 계산한 최적 경로 좌표 110개를 코드에 심어두고,
+        그 선에 가까울수록 점수. <b>경로를 미리 알려주는 방식.</b></td>
+        <td class="n">2.4 &rarr; 2.6 &rarr; 2.8</td></tr>
+    <tr><td><b>C</b> 속도 프로파일<br><span class="pill a">감가속</span></td>
+        <td>경로보다 감가속 타이밍이 랩타임을 만든다</td>
+        <td>앞쪽 웨이포인트를 읽어 다가오는 코너가 얼마나 급한지 실시간 계산하고,
+        그에 맞는 목표 속도를 추종하게 함.</td>
+        <td class="n">2.6 &rarr; 2.8 &rarr; 3.0</td></tr>
+    <tr class="hi"><td><b>E</b> 궤적 매칭<br><span class="pill a">최우선</span></td>
+        <td>위치와 속도를 함께 주면 가장 빠르다</td>
+        <td><b>B와 C를 합친 것.</b> 최적 경로의 각 지점마다
+        &ldquo;여기서는 이 속도&rdquo;까지 미리 계산해 함께 매칭. 가장 정보량이 많은 보상입니다.</td>
+        <td class="n">2.6 &rarr; 2.8</td></tr>
+    <tr><td><b>D</b> 워블 억제<br><span class="pill w">실차 대비</span></td>
+        <td>시뮬 1등이 실차 1등이 아니다</td>
+        <td>조향을 &plusmn;20&deg;로 제한하고 <b>핸들을 급하게 꺾는 것 자체</b>에 벌점.
+        실차에서 지그재그로 떨리는 현상을 막습니다.</td>
+        <td class="n">2.2</td></tr>
+  </table>
+
+  <div class="box g"><b>레인 D는 랩타임이 느려도 절대 지우지 마세요.</b>
+  D의 가치는 시뮬 기록이 아니라 <b>실차에서 흔들리지 않는 것</b>입니다.
+  오후 실차 테스트에서 B&middot;C&middot;E가 워블로 무너지면 D가 유일한 대안이 됩니다.</div>
+
+  <h3 style="margin-top:5mm">보상 함수 코드는 어디에</h3>
+  <p>깃허브 private 레포 <code>TaeHuiKKIM/deepracer-physical-ai</code>의 <code>reward_functions/</code>
+  폴더에 5개 파일이 있습니다. <b>파일을 열어 전체 복사 &rarr; 콘솔에 붙여넣기</b>만 하면 됩니다.
+  각 파일 맨 위에 그 레인의 가설과 튜닝 방법이 주석으로 적혀 있습니다.</p>
+</section>
+
+<section>
+  <div class="sh"><span class="sn">04</span><h2>액션 스페이스란 무엇인가</h2></div>
+
+  <p class="lead">가장 많이 오해하는 부분입니다. 이건 <b>속도 제한표가 아니라
+  &ldquo;차가 고를 수 있는 선택지 메뉴&rdquo;</b>입니다.</p>
+
+  <p>표의 한 줄 = 하나의 행동입니다. 예를 들어 <code>-5&deg; / 2.2</code> 줄은
+  &ldquo;핸들을 왼쪽 5도 꺾으면서 <b>동시에</b> 2.2 m/s로 달린다&rdquo;는 <b>하나의 묶음</b>입니다.
+  각도와 속도를 따로 정하는 게 아니라 세트로 붙어 있고, 차는 매 순간 이 목록에서 한 줄을 고릅니다.</p>
+
+  <div class="box a"><b>표에 없는 조합은 차가 못 합니다.</b>
+  예를 들어 우리 표에는 &ldquo;25도로 꺾으면서 2.6 m/s&rdquo; 같은 줄이 없습니다.
+  그러니 차는 그렇게 하고 싶어도 <b>할 수 없습니다.</b> 즉 각도별 속도 제한이
+  규칙으로 적혀 있는 게 아니라, <b>그 조합을 메뉴에서 빼버림으로써</b> 만들어집니다.
+  보상으로 &ldquo;급하게 꺾으면 벌점&rdquo;이라고 가르치는 건 차가 시행착오로 배워야 하지만,
+  메뉴에서 빼면 처음부터 불가능합니다.</div>
+
+  <h3 style="margin-top:5mm">왜 레인마다 조향 범위가 다른가</h3>
+  <p>계산해보니 <b>최적 경로가 요구하는 최대 조향각은 11.8&deg;</b>이고, 랩의 55%가 5&deg; 이내였습니다.
+  그래서 <b>경로를 따라가는 레인 B&middot;E는 최대 20&deg;로 좁히고 0&deg; 근처에 해상도를 몰아줬습니다.</b>
+  넓은 각도 선택지는 경로 추종에 쓰이지 않으면서, 차가 &ldquo;느리면서 많이 꺾는&rdquo; 나쁜 습관을
+  배울 함정이 되기 때문입니다.</p>
+  <p>반면 <b>중앙선을 달리는 레인 A&middot;C는 더 큰 조향이 필요합니다.</b> 중앙선의 코너가
+  레이싱 라인보다 더 조이기 때문입니다(최소 반경 0.61m 대 0.79m).</p>
+
+  <h3 style="margin-top:5mm">개수는 8~12개</h3>
+  <p>각 줄은 차가 &ldquo;이 화면에서 이 행동이 좋은가&rdquo;를 따로 학습해야 하는 항목입니다.
+  30개면 탐색 공간이 너무 커져 짧은 학습으로 수렴하지 못하고, 4~5개면 너무 거칠어 정밀한
+  코너링이 안 됩니다.</p>
+
+  <h3 style="margin-top:5mm">오른쪽 Radial polar graph로 검산</h3>
+  <p>표를 그림으로 그린 것입니다. <b>화살표 방향 = 조향각, 길이 = 속도.</b>
+  <b>위쪽(직진) 화살표가 가장 길고 바깥쪽(큰 조향) 화살표가 짧으면</b> 제대로 입력된 것입니다.
+  바깥 화살표가 길면 &ldquo;급조향 + 고속&rdquo; 조합이 들어간 것이니 고쳐야 합니다.</p>
+</section>
+
+<section>
+  <div class="sh"><span class="sn">05</span><h2>레인별 입력표 &mdash; 그대로 타이핑</h2></div>
+
+  <p class="lead"><b>모두 공통:</b> 트랙 A to Z Speedway &middot; Time trial &middot; 평가 5회 &middot;
+  센서 Camera만(LiDAR 해제) &middot; PPO &middot; Batch 64 &middot; <b>Epochs 3</b> &middot; LR 0.0003 &middot;
+  Entropy 0.01 &middot; <b>Discount 0.995</b> &middot; Loss Huber &middot; Episodes 20 &middot; 학습 45~60분</p>
+
+  <div class="box w"><b>기본값 그대로 두면 안 되는 것 두 개.</b>
+  <b>Number of epochs는 10 &rarr; 3</b> (같은 경험을 열 번 복습하면 그 상황에만 맞춰진 정책이
+  되어 처음 보는 코너에서 튕겨나갑니다). <b>Discount factor는 0.99 &rarr; 0.995</b>
+  (약 200스텝 &asymp; 13초 앞을 보게 되어, &ldquo;지금 감속해서 손해 보고 코너를 통과해 이득 본다&rdquo;는
+  판단을 배울 수 있습니다).</div>
+
+  <h3>레인 A &middot; 중앙선 <span class="pill g">캡 2.2</span></h3>
+  <table>
+    <tr><th class="n">#</th><th class="n">조향</th><th class="n">속도</th><th class="n">#</th><th class="n">조향</th><th class="n">속도</th></tr>
+    <tr><td class="n">0</td><td class="n">&minus;25&deg;</td><td class="n">1.5</td><td class="n">5</td><td class="n">+5&deg;</td><td class="n">2.2</td></tr>
+    <tr><td class="n">1</td><td class="n">&minus;15&deg;</td><td class="n">1.8</td><td class="n">6</td><td class="n">+10&deg;</td><td class="n">2.0</td></tr>
+    <tr><td class="n">2</td><td class="n">&minus;10&deg;</td><td class="n">2.0</td><td class="n">7</td><td class="n">+15&deg;</td><td class="n">1.8</td></tr>
+    <tr><td class="n">3</td><td class="n">&minus;5&deg;</td><td class="n">2.2</td><td class="n">8</td><td class="n">+25&deg;</td><td class="n">1.5</td></tr>
+    <tr><td class="n">4</td><td class="n">0&deg;</td><td class="n">2.2</td><td class="n">9</td><td class="n">0&deg;</td><td class="n">1.8</td></tr>
+  </table>
+
+  <h3 style="margin-top:4mm">레인 B &middot; 레이싱 라인 &nbsp;/&nbsp; 레인 E &middot; 궤적 매칭 <span class="pill a">좁은 조향</span></h3>
+  <p style="font-size:9pt;color:var(--ink2);margin-top:0">아래는 캡 2.6 기준입니다.
+  사다리를 올릴 때 <b>CAP 표시된 칸과 Maximum speed만</b> 바꾸세요 (2.4 / 2.6 / 2.8).</p>
+  <table>
+    <tr><th class="n">#</th><th class="n">조향</th><th class="n">속도</th><th class="n">#</th><th class="n">조향</th><th class="n">속도</th></tr>
+    <tr><td class="n">0</td><td class="n">0&deg;</td><td class="n"><b>CAP</b> 2.6</td><td class="n">5</td><td class="n">+13&deg;</td><td class="n">2.2</td></tr>
+    <tr><td class="n">1</td><td class="n">+4&deg;</td><td class="n">2.6</td><td class="n">6</td><td class="n">&minus;13&deg;</td><td class="n">2.2</td></tr>
+    <tr><td class="n">2</td><td class="n">&minus;4&deg;</td><td class="n">2.6</td><td class="n">7</td><td class="n">+20&deg;</td><td class="n">1.8</td></tr>
+    <tr><td class="n">3</td><td class="n">+8&deg;</td><td class="n">2.4</td><td class="n">8</td><td class="n">&minus;20&deg;</td><td class="n">1.8</td></tr>
+    <tr><td class="n">4</td><td class="n">&minus;8&deg;</td><td class="n">2.4</td><td class="n">9</td><td class="n">0&deg;</td><td class="n">2.0</td></tr>
+  </table>
+
+  <h3 style="margin-top:4mm">레인 C &middot; 속도 프로파일 <span class="pill a">12개</span></h3>
+  <p style="font-size:9pt;color:var(--ink2);margin-top:0">캡을 바꿀 때
+  <b>보상 함수 안의 <code>target</code> 첫 값도 함께</b> 바꿔야 합니다(캡과 일치해야 함).</p>
+  <table>
+    <tr><th class="n">#</th><th class="n">조향</th><th class="n">속도</th><th class="n">#</th><th class="n">조향</th><th class="n">속도</th></tr>
+    <tr><td class="n">0</td><td class="n">&minus;28&deg;</td><td class="n">1.4</td><td class="n">6</td><td class="n">+4&deg;</td><td class="n">2.4</td></tr>
+    <tr><td class="n">1</td><td class="n">&minus;20&deg;</td><td class="n">1.6</td><td class="n">7</td><td class="n">+8&deg;</td><td class="n">2.2</td></tr>
+    <tr><td class="n">2</td><td class="n">&minus;14&deg;</td><td class="n">1.9</td><td class="n">8</td><td class="n">+14&deg;</td><td class="n">1.9</td></tr>
+    <tr><td class="n">3</td><td class="n">&minus;8&deg;</td><td class="n">2.2</td><td class="n">9</td><td class="n">+20&deg;</td><td class="n">1.6</td></tr>
+    <tr><td class="n">4</td><td class="n">&minus;4&deg;</td><td class="n">2.4</td><td class="n">10</td><td class="n">+28&deg;</td><td class="n">1.4</td></tr>
+    <tr><td class="n">5</td><td class="n">0&deg;</td><td class="n"><b>CAP</b> 2.6</td><td class="n">11</td><td class="n">0&deg;</td><td class="n">2.0</td></tr>
+  </table>
+
+  <h3 style="margin-top:4mm">레인 D &middot; 워블 억제 <span class="pill w">8개 &middot; &plusmn;20&deg;</span></h3>
+  <table>
+    <tr><th class="n">#</th><th class="n">조향</th><th class="n">속도</th><th class="n">#</th><th class="n">조향</th><th class="n">속도</th></tr>
+    <tr><td class="n">0</td><td class="n">&minus;20&deg;</td><td class="n">1.4</td><td class="n">4</td><td class="n">+6&deg;</td><td class="n">2.0</td></tr>
+    <tr><td class="n">1</td><td class="n">&minus;12&deg;</td><td class="n">1.7</td><td class="n">5</td><td class="n">+12&deg;</td><td class="n">1.7</td></tr>
+    <tr><td class="n">2</td><td class="n">&minus;6&deg;</td><td class="n">2.0</td><td class="n">6</td><td class="n">+20&deg;</td><td class="n">1.4</td></tr>
+    <tr><td class="n">3</td><td class="n">0&deg;</td><td class="n">2.2</td><td class="n">7</td><td class="n">0&deg;</td><td class="n">1.6</td></tr>
+  </table>
+</section>
+
+<section>
+  <div class="sh"><span class="sn">06</span><h2>콘솔 조작 순서와 함정</h2></div>
+
+  <div class="step"><div class="b">1</div><div><b>Step 1 &mdash; 이름과 트랙.</b>
+  모델 이름은 <code>{레인}-v{번호}</code> 형식으로 (예: <code>E-v1</code>).
+  트랙 검색창에 <b><code>A to Z</code></b>를 입력하고 <b>길이 16.64m &middot; 폭 107cm</b> 표시를 확인하세요.
+  평가 횟수는 5.</div></div>
+
+  <div class="box b"><b>함정 &#9312;</b> &mdash; <code>2018</code>로 검색하면 <b>re:Invent 2018</b>(17.6m&middot;76cm)이 나옵니다.
+  <b>그건 우리 트랙이 아닙니다.</b> 두 카드는 모양이 똑같아서 썸네일로는 구분이 안 되니
+  반드시 숫자를 보세요. A to Z 카드 설명에 &ldquo;re:Invent 2018&rdquo;이라는 문구가 들어 있어 더 헷갈립니다.</div>
+
+  <div class="step"><div class="b">2</div><div><b>Step 2 &mdash; 센서와 하이퍼파라미터.</b>
+  센서는 <b>Camera만</b>(LiDAR 체크 해제 &mdash; 기본값이 이미 맞습니다). 알고리즘 PPO.
+  <code>Hyperparameters</code>를 펼쳐 <b>Epochs 3</b>, <b>Discount factor 0.995</b>로 변경.</div></div>
+
+  <div class="step"><div class="b">3</div><div><b>Step 3 &mdash; 액션 스페이스.</b>
+  <b><code>Discrete action space</code></b> 클릭(기본값은 Continuous이니 반드시 바꾸세요) &rarr;
+  <b>Maximum speed를 먼저</b> 레인 캡으로 설정 &rarr; <b><code>Advanced configuration</code> 토글 ON</b> &rarr;
+  05절 표대로 각 행 입력. 행 추가는 <code>+ Add an action</code>, 삭제는 오른쪽 <code>&times;</code>.</div></div>
+
+  <div class="box b"><b>함정 &#9313; 가장 중요합니다</b> &mdash;
+  값을 입력한 뒤 <b>반드시 Tab 키를 누르세요.</b> Tab 없이 다음 칸으로 넘어가면
+  화면상 입력된 것처럼 보여도 <b>이전 값으로 전부 되돌아갑니다.</b> 한 칸 입력 &rarr; Tab &rarr; 다음 칸.</div>
+
+  <div class="box w"><b>함정 &#9314;</b> &mdash; <code>Advanced configuration</code>을 켜지 않으면
+  콘솔이 자동으로 격자를 만드는데, 거기엔 <b>큰 조향각에 최고 속도를 붙인 줄</b>이
+  그대로 들어갑니다(예: 30&deg;/2.6). 실차 스핀의 직행 코스입니다. 반드시 켜고 직접 입력하세요.<br>
+  <b>함정 &#9315;</b> &mdash; Maximum speed 기본값이 <b>1</b>입니다. 먼저 바꾸지 않으면 행 속도를
+  그 위로 입력할 수 없습니다.</div>
+
+  <div class="step"><div class="b">4</div><div><b>Step 4 &mdash; 차량 외형.</b> 성능에 영향 없습니다.
+  다만 <b>각자 다른 색</b>을 고르면 학습 영상에서 누구 모델인지 바로 구분됩니다.</div></div>
+
+  <div class="step"><div class="b">5</div><div><b>Step 5 &mdash; 보상 함수.</b>
+  기본 예제 코드를 <b>전체 선택 후 지우고</b> 레포의 파일 내용을 붙여넣기 &rarr;
+  <b><code>Validate</code> 클릭</b> &rarr; <code>Errors: 0</code> 확인 &rarr;
+  <b>Maximum time 45~60분</b> 설정 &rarr; <code>Train your model</code>.</div></div>
+
+  <div class="box w"><b>함정 &#9316;</b> &mdash; 보상 함수는 PEP8 검사를 통과해야 합니다.
+  <code>def reward_function</code> 앞에 <b>빈 줄이 정확히 2개</b> 필요합니다
+  (<code>expected 2 blank lines, found 1</code> 오류). 레포 파일은 이미 맞춰져 있으니
+  <b>파일 전체를 그대로 복사</b>하면 문제없습니다.<br>
+  <b>함정 &#9317;</b> &mdash; Maximum time을 1440분까지 넣을 수 있지만 <b>절대 그러지 마세요.</b>
+  3시간을 넘기면 시뮬레이터의 배경 픽셀까지 암기해서 실차에서 무너집니다.</div>
+</section>
+
+<section>
+  <div class="sh"><span class="sn">07</span><h2>당일 진행과 판정</h2></div>
+
+  <h3>기록 규칙 &mdash; 이게 없으면 수십 번의 학습이 사라집니다</h3>
+  <ul>
+    <li><b>모델 이름</b>: <code>{레인}-v{번호}</code> &mdash; 이름만 보고 어떤 가설의 몇 번째 시도인지 알 수 있게</li>
+    <li><b>공용 시트 1행 = 학습 1회</b>: 레인 / 버전 / <b>이전 버전에서 바꾼 것 하나</b> /
+    평가 완주율 / 평균 랩타임 / 실차 결과</li>
+    <li><b>한 번에 하나만 바꿉니다.</b> 보상 함수와 속도를 동시에 바꾸면 무엇이 효과였는지
+    영원히 알 수 없습니다. 1순위로 바꿀 것은 항상 속도입니다.</li>
+  </ul>
+
+  <h3 style="margin-top:5mm">Gate 1 &middot; 오전 &mdash; 판정표</h3>
+  <table>
+    <tr><th class="n">5회 중 완주</th><th>판정</th><th>행동</th></tr>
+    <tr><td class="n"><b>5/5</b></td><td><span class="pill g">합격</span></td>
+        <td>Clone해서 <b>속도만 한 단계 올린다.</b> 사다리를 계속 올라갑니다.</td></tr>
+    <tr><td class="n"><b>3~4/5</b></td><td><span class="pill w">경계</span></td>
+        <td>Clone해서 <b>속도만 &minus;0.2.</b> 보상 함수는 그대로. 가설은 아직 살아 있습니다.</td></tr>
+    <tr><td class="n"><b>0~2/5</b></td><td><span class="pill b">불합격</span></td>
+        <td>Clone해서 <b>속도 &minus;0.4.</b> 두 번 연속 실패하면 그 레인은 접고 A 레시피로.</td></tr>
+  </table>
+
+  <h3 style="margin-top:5mm">Gate 2 &middot; 오후 실차 &mdash; 진짜 선발전</h3>
+  <p>순위는 실물 트랙에서 갈립니다. 오전이 늦어져도 <b>오후 실차 시간은 절대 놓치지 마세요.</b></p>
+  <table>
+    <tr><th style="width:26%">측정 항목</th><th>방법</th></tr>
+    <tr><td><b>&#9312; 탈선 실비용</b></td><td>일부러 한 번 이탈시켜 정지 &rarr; 재배치 &rarr; 원래 속도 회복까지
+      스톱워치로 3회 측정. <b>본선 공격 수위를 정하는 유일한 근거</b>입니다.</td></tr>
+    <tr><td><b>&#9313; 워블 임계 속도</b></td><td>스로틀을 낮게 시작해 <b>0.2 m/s 단위로</b> 올리며
+      지그재그가 시작되는 지점 기록. 본선은 그보다 <b>한 단계 아래</b>로.</td></tr>
+    <tr><td><b>&#9314; 배율별 랩타임</b></td><td>스로틀 80 / 90 / 100%에서 랩타임과 탈선 횟수.
+      본선 배율을 여기서 그대로 고릅니다.</td></tr>
+  </table>
+  <p><b>가져갈 것:</b> 모델 파일(<code>Actions &rarr; Download physical car model</code>로 미리 내려두기),
+  줄자, 스톱워치, 완충 배터리, 기록용 노트.</p>
+
+  <div class="box a"><b>선발 기준은 랩타임이 아니라 최종 시간입니다.</b>
+  <code>랩타임 + 탈선횟수 &times; 실비용</code>으로 줄을 세우고, <b>기대 시간이 가장 낮은 2개</b>를
+  본선에 올립니다. 평균 채점이므로 편차가 큰 모델은 같은 평균이라도 탈락시킵니다.
+  트랙 시간이 짧으면 빠른 쪽부터: <b>E &rarr; C &rarr; B &rarr; D &rarr; A</b>.</div>
+
+  <h3 style="margin-top:5mm">Gate 3 &middot; 밤 &mdash; 본선 모델 2개 확정</h3>
+  <div class="box b"><b>절대 규칙: 실차 검증을 받지 않은 모델은 본선에 올리지 않습니다.</b>
+  Day 3 아침에는 검증할 시간이 없고, 미검증 모델을 올리는 것은 순위가 아니라
+  <b>기록 자체를 거는 도박</b>입니다.</div>
+
+  <h3 style="margin-top:5mm">아직 운영진에게 확인할 것</h3>
+  <ul>
+    <li><b>완주 실패 시 어떤 시간이 기록되는가</b> &mdash; 평균 채점에서 최대 리스크.
+    상한 시간이 들어가면 사다리 상단을 얼마나 밀지가 달라집니다</li>
+    <li><b>두 모델이 서로 달라야 하는가</b> &mdash; 같은 모델을 2개로 등록 가능한가</li>
+    <li><b>탈선 재배치 중 시계가 멈추는가</b></li>
+    <li><b>역대 기록</b> &mdash; 목표를 8초로 잡을지 9초로 잡을지 조준용</li>
+    <li><b>트랙 방향</b> &mdash; A to Z가 반시계 전용인지</li>
+  </ul>
+
+  <div class="ftr">딥레이서 팀 브리핑 v5 &middot; 2026-08-19 &middot; 상세 계산 근거는
+  <code>plans/atoz_design.md</code>, 보상 함수는 <code>reward_functions/</code> &middot;
+  깃허브 <code>TaeHuiKKIM/deepracer-physical-ai</code></div>
+</section>
+</body></html>
