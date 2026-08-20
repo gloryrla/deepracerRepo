@@ -3,26 +3,41 @@
 
 Hypothesis: braking/acceleration TIMING matters more than the racing line.
 
-Reads the upcoming waypoints, measures how much the track direction changes
-over the next two segments, and derives a target speed from that. The reward
-is highest when the car's actual speed matches the target - so the car learns
-to slow down BEFORE a corner and open up on the straights.
+TRACK: A to Z Speedway (`reInvent2019_wide`, 16.64 m x 107 cm).
+Needs no coordinates -- everything is read from params['waypoints'] at runtime,
+so this file stays valid if the track ever changes. Only the numbers below were
+calibrated against A to Z's actual geometry.
 
-Needs no external data: everything comes from params['waypoints'] at runtime.
+--- CALIBRATION (measured on A to Z's 110 waypoints, mean spacing 0.150 m) ---
 
-TUNING: `k` is how far ahead the car looks.
-    - exits the track late into a corner  -> raise k to 5 or 6 (brake earlier)
-    - slows down far too early            -> lower k to 3
-    Change ONLY this value between runs.
+LOOKAHEAD.  The old k=4 was too short: it looked 2*k*0.150 = 1.20 m ahead,
+which at 2.5 m/s is only 0.48 s of warning. Braking 2.5 -> 1.5 m/s at ~4 m/s^2
+needs about 0.25 s and half a metre, so k=4 left almost no margin and the car
+would enter corners hot. k=6 looks 1.80 m / 0.72 s ahead -- enough to brake
+early and still accelerate out. Measured distribution of the `turn` metric:
 
+        k   ahead    @2.5m/s   p50    p75    p90    max
+        4   1.20 m    0.48 s   10.6   34.7   39.3   51.1
+        6   1.80 m    0.72 s   20.9   43.5   59.0   67.8
+        8   2.40 m    0.96 s   30.0   53.6   74.1   78.6
+
+THRESHOLDS.  The old 5/12/25 boundaries were set by guesswork and were far too
+low for this metric: at k=6 the MEDIAN turn is 20.9 degrees, so `turn < 5`
+almost never fired and the car essentially never received the top-speed target.
+The 15/35/52 boundaries below sit near the 40th/65th/85th percentiles, which
+puts roughly 40% of the lap at full speed and 15% at the slow tier.
+
+TUNING: change ONE value between runs.
+    - enters corners hot / runs wide  -> k = 8 (brake earlier)
+    - slows down far too early        -> k = 5
 CAP must match the action space maximum speed:
-    C-p2-v2  max 2.4  ->  targets 2.4 / 2.1 / 1.8 / 1.4
-    C-p2-v1  max 2.6  ->  targets 2.6 / 2.2 / 1.8 / 1.4
-    C-p2-v3  max 2.8  ->  targets 2.8 / 2.3 / 1.8 / 1.4
+    C-v2 max 2.4 -> targets 2.4 / 2.0 / 1.7 / 1.4
+    C-v1 max 2.6 -> targets 2.6 / 2.2 / 1.8 / 1.5   (this file)
+    C-v3 max 2.8 -> targets 2.8 / 2.3 / 1.9 / 1.5
 
 Action space (discrete, 12 actions):
-    -28/1.3  -20/1.5  -14/1.8  -8/2.1  -4/2.4  0/CAP
-      4/2.4    8/2.1   14/1.8  20/1.5  28/1.3  0/1.9
+    -28/1.4  -20/1.6  -14/1.9  -8/2.2  -4/2.4  0/CAP
+      4/2.4    8/2.2   14/1.9  20/1.6  28/1.4  0/2.0
 """
 import math
 
@@ -44,7 +59,7 @@ def reward_function(params):
         return math.atan2(b[1] - a[1], b[0] - a[0])
 
     # heading change over the next two segments = how sharp the corner ahead is
-    k = 4
+    k = 6
     delta = math.degrees(ang(nx + k, nx + 2 * k) - ang(nx, nx + k))
     while delta > 180:
         delta -= 360
@@ -52,15 +67,15 @@ def reward_function(params):
         delta += 360
     turn = abs(delta)
 
-    # curvature -> target speed  (set the first value to the action-space CAP)
-    if turn < 5:
+    # curvature -> target speed  (first value must equal the action-space CAP)
+    if turn < 15:
         target = 2.6
-    elif turn < 12:
+    elif turn < 35:
         target = 2.2
-    elif turn < 25:
+    elif turn < 52:
         target = 1.8
     else:
-        target = 1.4
+        target = 1.5
 
     # 1.0 when the speed matches the target exactly, decaying either side
     reward = math.exp(-1.2 * abs(speed - target))

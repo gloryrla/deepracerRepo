@@ -9,9 +9,11 @@ Two defences:
   1. the action space caps steering at +/-20 degrees (instead of 30)
   2. the reward penalises the RATE OF CHANGE of the steering angle
 
-If Lane B and Lane C fall apart on the physical track on Day 2 afternoon, this
-is the only remaining candidate - so do not delete it just because its
-simulated lap time is slower.
+If Lane B and Lane C fall apart on the physical track, this is the fallback.
+
+NOTE (2026-08-19): scoring is now the AVERAGE of two models' times. That makes
+consistency worth more than peak speed -- a lane that never wobbles is a
+stronger candidate under averaging than it was under best-of-two.
 
 CAVEAT on the global: the reward function has no memory of the previous step,
 so the previous steering angle is kept in a module-level dict. This is a common
@@ -20,11 +22,12 @@ rollout workers the values can interleave. If training converges strangely,
 delete the `rate` block and keep only the absolute-steering penalty - weaker,
 but safe.
 
-Action space (discrete, 8 actions, max 2.0 m/s, steering limited to +/-20):
-    -20/1.2  -12/1.5  -6/1.8  0/2.0
-      6/1.8   12/1.5  20/1.2  0/1.4
+TRACK: A to Z Speedway (`reInvent2019_wide`, 16.64 m x 107 cm). Width-relative
+only -- no coordinates to update.
 
-Used by model: D-p2-v1  (60 min)
+Action space (discrete, 8 actions, max 2.2 m/s, steering limited to +/-20):
+    -20/1.4  -12/1.7  -6/2.0  0/2.2
+      6/2.0   12/1.7  20/1.4  0/1.6
 """
 import math
 
@@ -58,7 +61,7 @@ def reward_function(params):
         reward *= 0.8
 
     # high-speed oversteer penalty
-    if speed > 1.7 and abs(steer) > 15:
+    if speed > 1.9 and abs(steer) > 15:
         reward *= 0.7
 
     PREV['steer'] = steer
