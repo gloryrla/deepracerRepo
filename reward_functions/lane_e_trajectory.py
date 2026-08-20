@@ -1,46 +1,120 @@
 """
-[Lane E] Match the full optimal trajectory: position AND speed.
+[레인 E] 최적 궤적 추종 - 위치와 속도를 동시에 매칭한다.
 
-Hypothesis: Lane B and Lane C are each half of the answer. B rewards being on
-the optimal line but says nothing about how fast to be there; C rewards a speed
-derived from local curvature at runtime, which is myopic -- it cannot know that
-a corner two metres ahead means braking now. Encoding both together gives the
-densest possible reward signal.
+=========================== 설계 의도 ===========================
 
-TRACK: A to Z Speedway (`reInvent2019_wide`, 16.64 m x 107 cm)
+랩타임을 만드는 것은 두 가지다. (1) 어떤 경로를 지나는가, (2) 그 경로의 각
+지점에서 얼마나 빠른가. 둘 중 하나만 맞아도 랩타임은 나오지 않는다. 최적 경로
+위를 느리게 달리면 느리고, 빠르지만 엉뚱한 경로면 거리가 길어지거나 나간다.
 
-Each row below is (x, y, target_speed). The line is the K1999 curvature-
-equalised racing line (1500 sweeps, 15.409 m, min radius 0.79 m). The speed at
-each point is GLOBALLY optimised, not derived locally: it starts from the
-cornering limit sqrt(a_lat / curvature) and is then propagated forwards and
-backwards so that every point is reachable under acceleration and braking
-limits. That is what lets the car brake *before* a corner it cannot yet see.
+앞서 만든 두 레인은 각각 이 중 절반만 가르쳤다.
 
-Assumptions baked into the speed column: a_lat 6.0 m/s2, a_long 2.0 m/s2,
-cap 2.6 m/s. The resulting profile is remarkably flat -- median 2.60, minimum
-2.18 -- because on a 107 cm track the racing line opens the corners enough to
-carry near-top speed almost everywhere.
+  레인 B (레이싱 라인)   위치는 알려주지만 그 지점의 속도는 말하지 않는다.
+  레인 C (속도 프로파일) 곡률로 속도를 정하지만 근시안적이다. 눈앞의 곡률만
+                         보므로 2 m 앞 코너를 위해 지금 감속해야 함을 모른다.
 
->>> RECALIBRATE AFTER THE DAY 2 PHYSICAL RUN. <<<
-The speed column depends on the assumed grip. If the real car cannot hold these
-speeds, regenerate with a lower a_lat rather than fighting it with the reward.
+레인 E는 두 정보를 하나의 궤적으로 합친다. 각 점이 (x, y, 목표속도)이고,
+목표속도는 국소 곡률이 아니라 랩 전체를 놓고 계산한 값이다. 즉 "다음 코너를
+위해 지금 브레이크를 밟아야 한다"가 좌표에 이미 새겨져 있다.
 
-TUNING:
-    ALPHA (position) - raise to hug the line harder, lower if it falls off
-    BETA  (speed)    - raise to force the speed profile, lower if it will not
-                       converge. Start with speed weighted more weakly than
-                       position: getting on the line matters first.
+--- 궤적을 어떻게 얻었는가 ---
 
-Action space: use the narrow one derived from this trajectory (see
-plans/atoz_design.md) -- the line never demands more than 11.8 degrees of
-steering, so +/-20 with fine resolution near zero beats +/-28 with coarse steps.
+경로: log-guru의 A to Z 센터라인 웨이포인트 110점에 곡률 균등화(K1999)를
+1500회 적용했다. 센터라인 16.635 m 대비 15.409 m로 7.4% 짧고, 최소 코너
+반경은 0.61 m에서 0.79 m로 30% 커졌다.
+
+속도: 두 단계로 계산했다.
+  1) 각 점의 코너 한계속도 = sqrt(횡가속도 한계 / 곡률)
+  2) 그 상한을 따라 앞뒤로 가감속 전파. 앞 코너의 한계속도에서 역산해 제동
+     거리를 확보하고, 코너 출구에서는 가속 한계만큼만 올린다.
+
+이 2단계 때문에 목표속도는 코너 진입 훨씬 전부터 내려간다. 레인 C가 구조적으로
+할 수 없는 부분이 정확히 이것이다.
+
+--- 왜 두 항을 곱하는가 (더하지 않고) ---
+
+    보상 = 위치항 x 속도항
+
+곱은 논리적 AND다. 둘 다 맞아야 점수가 나오고 하나라도 틀리면 전체가 깎인다.
+더하기로 하면 OR이 되어 "라인은 완벽한데 속도가 엉망"인 주행이 절반의 점수를
+받는다. 그런 정책은 최적 경로 위를 기어가는 차로 수렴한다. 우리가 원하는 것은
+타협이 아니라 두 조건의 동시 충족이므로 곱이 맞다.
+
+부수 효과로 보상 상한이 정확히 1.0이 된다 (두 항 모두 exp(0) = 1).
+
+--- 왜 위치는 제곱(가우시안), 속도는 절대값인가 ---
+
+위치항 exp(-ALPHA * (d/tw)^2) 는 d = 0 근처에서 평평하다. 라인에서 1~2 cm
+벗어난 것을 거의 벌주지 않는다는 뜻이고 이는 의도적이다. 밀리미터를 쫓느라
+조향을 떠는 정책이 되는 것을 막는다. 대신 d가 커질수록 급격히 떨어진다.
+민감도가 가장 높은 지점은 tw/sqrt(2*ALPHA) = 0.31 m 부근으로, 트랙을 벗어나기
+직전 구간에서 가장 강하게 밀어낸다.
+
+속도항 exp(-BETA * |dv|) 는 오차에 선형이다. 0 근처에서도 기울기가 살아 있어
+작은 속도 오차에도 계속 압력을 준다. 속도는 위치와 달리 "거의 맞음"으로 만족할
+대상이 아니다. 0.2 m/s의 상시 부족이 랩타임에 그대로 누적되기 때문이다.
+
+--- ALPHA와 BETA의 크기를 왜 이렇게 잡았는가 ---
+
+두 항의 단위가 다르므로(위치는 폭으로 정규화된 무차원, 속도는 m/s) 숫자만으로는
+비교가 안 된다. 같은 감점을 주는 지점으로 환산하면 이렇다.
+
+        위치 0.10 m 이탈  ==  속도 오차 0.07 m/s
+        위치 0.20 m 이탈  ==  속도 오차 0.26 m/s
+        위치 0.30 m 이탈  ==  속도 오차 0.59 m/s
+        위치 0.40 m 이탈  ==  속도 오차 1.05 m/s
+
+작은 이탈은 관대하게, 큰 이탈은 속도 오차보다 훨씬 무겁게 다룬다. 트랙을
+벗어나면 1초 페널티라는 대회 규정에 맞춘 배분이다.
+
+위치를 폭(track_width)으로 나누는 이유는 트랙이 바뀌어도 같은 의미를 유지하기
+위해서다. "폭의 몇 퍼센트만큼 벗어났는가"는 트랙 불변이지만 "몇 미터 벗어났는가"
+는 아니다.
+
+--- 안티 워블 항 ---
+
+    if speed > 1.8 and abs(steering_angle) > 15: reward *= 0.7
+
+시뮬레이터에서 가장 빠른 정책이 실차에서 가장 빠르지 않다. 실제 서보에는 지연과
+관성이 있어서 고속에서 크게 꺾는 동작은 타이어 접지를 잃고 스핀으로 이어진다.
+시뮬레이터는 이 손실을 모델링하지 않으므로 보상에서 직접 뺀다. 이 대회는 두 모델
+시간의 평균으로 채점하므로 버릴 수 있는 주행이 없고, 분산을 줄이는 항의 가치가
+평소보다 크다.
+
+--- 이탈 시 1e-3 (0이 아닌 이유) ---
+
+이탈 보상을 0으로 두면 그 스텝의 기울기가 사라져 학습 신호가 끊긴다. 아주 작은
+양수로 두면 가능한 모든 트랙 위 상태보다 확실히 나쁘지만 학습은 계속된다. 같은
+이유로 마지막에 max(reward, 1e-3)로 하한을 둔다.
+
+=========================== 튜닝 ===========================
+
+한 번에 하나만 바꾼다.
+  라인에 붙어 있다가 코너에서 나간다  ->  ALPHA를 4.0으로 낮춘다
+  라인을 못 따라가고 방황한다         ->  ALPHA를 8.0으로 올린다
+  위치는 좋은데 계속 느리다           ->  BETA를 1.2로 올린다
+  속도만 맞추려다 라인을 버린다       ->  BETA를 0.4로 낮춘다
+
+TRAJ의 목표속도는 액션 스페이스의 최고 속도와 맞아야 한다. 캡을 2.8로 올리려면
+좌표의 2.60을 2.80으로 바꿔야 하며, 그러지 않으면 정책이 도달할 수 없는 속도를
+목표로 삼거나 반대로 스스로 상한을 낮춘다.
+
+=========================== 경고 ===========================
+
+TRACK: A to Z Speedway (reInvent2019_wide, 16.64 m x 107 cm)
+
+>>> 이 좌표는 절대 좌표다. 다른 트랙에 재사용하면 안 된다. <<<
+re:Invent 2018에 쓰면 아스팔트 밖을 향해 보상을 주게 된다.
 """
 import math
 
-ALPHA = 6.0      # position term
-BETA  = 0.8      # speed term
+# 위치 항의 엄격도. 클수록 라인을 강하게 붙잡는다
+ALPHA = 6.0
+# 속도 항의 엄격도. 클수록 목표속도 추종을 강하게 요구한다
+BETA = 0.8
 
-# (x, y, optimal_speed) along the A to Z racing line
+# A to Z 최적 궤적 110점: (x, y, 목표속도)
+# 좌표는 K1999 곡률 균등화 1500회, 속도는 코너 한계 + 가감속 전파로 계산
 TRAJ = [
     (2.56121, 1.09439, 2.60), (2.71254, 1.05987, 2.60),
     (2.86386, 1.02967, 2.60), (3.01518, 1.00288, 2.60),
@@ -100,6 +174,7 @@ TRAJ = [
 
 
 def reward_function(params):
+    # 이탈은 즉시 최소 보상. 0이 아니라 1e-3인 이유는 상단 주석 참고
     if params['is_offtrack'] or not params['all_wheels_on_track']:
         return 1e-3
 
@@ -108,7 +183,9 @@ def reward_function(params):
     tw = params['track_width']
     speed = params['speed']
 
-    # nearest trajectory point, and the speed it wants there
+    # 궤적에서 가장 가까운 점을 찾고, 그 점이 요구하는 속도를 함께 가져온다.
+    # 이 루프가 레인 E의 핵심이다. 위치를 찾는 동시에 목표속도가 결정된다.
+    # 비교는 제곱거리로 하고 sqrt는 루프 밖에서 한 번만 (110회 sqrt 절약)
     dmin = 1e9
     v_target = 2.0
     for px, py, pv in TRAJ:
@@ -118,11 +195,17 @@ def reward_function(params):
             v_target = pv
     dmin = math.sqrt(dmin)
 
-    # position term x speed term
-    reward = math.exp(-ALPHA * (dmin / tw) ** 2)         * math.exp(-BETA * abs(speed - v_target))
+    # 위치항 x 속도항. 곱이므로 둘 다 맞아야 점수가 나온다 (AND)
+    # 위치는 폭으로 정규화 -> 트랙이 바뀌어도 의미가 유지된다
+    # 위치는 제곱(작은 오차에 관대), 속도는 절대값(작은 오차에도 압력)
+    pos_term = math.exp(-ALPHA * (dmin / tw) ** 2)
+    spd_term = math.exp(-BETA * abs(speed - v_target))
+    reward = pos_term * spd_term
 
-    # anti-wobble
+    # 안티 워블: 고속 대각도 조향을 감점한다.
+    # 시뮬은 서보 지연과 타이어 슬립을 모델링하지 않으므로 보상에서 직접 뺀다
     if speed > 1.8 and abs(params['steering_angle']) > 15:
         reward *= 0.7
 
+    # 하한. 기울기가 완전히 사라지는 것을 막는다
     return float(max(reward, 1e-3))
