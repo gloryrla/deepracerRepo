@@ -25,6 +25,7 @@
 | [reward_functions/final_d_speedup_clone.py](reward_functions/final_d_speedup_clone.py) | **최종 채택 모델 코드.** 설계 의도 주석 포함 |
 | [docs/physical_tuning_log.md](docs/physical_tuning_log.md) | 실차 스로틀 스윕 기록. 2% 단위 경계선 탐색 |
 | [docs/evaluation_results.md](docs/evaluation_results.md) | 시뮬 평가 실측 전체 (모델별 5회 원본) |
+| **[docs/hyperparameters.md](docs/hyperparameters.md)** | **하이퍼파라미터를 그렇게 정한 이유.** epochs 3, discount 0.995의 근거 |
 | [docs/physical_ai_basics.md](docs/physical_ai_basics.md) | Physical AI · 강화학습 배경 지식 |
 
 ---
@@ -39,7 +40,10 @@
 | 보상 함수 | 중앙선 추종 + 조향 변화율 페널티. **좌표 없음** |
 | 액션 스페이스 | 10행, **±20° 제한**, 최고 2.60 m/s |
 | 학습 | 15분 (`D-speedup`에서 Clone) |
-| 하이퍼파라미터 | PPO · Batch 64 · Epochs 3 · Discount 0.995 · LR 0.0003 · Entropy 0.01 |
+| 하이퍼파라미터 | PPO · Batch 64 · **Epochs 3** · **Discount 0.995** · LR 0.0003 · Entropy 0.01 |
+
+기본값에서 **실제로 바꾼 것은 Epochs(10→3)와 Discount(0.99→0.995) 둘뿐이다.**
+근거는 [hyperparameters.md](docs/hyperparameters.md).
 
 ```
 액션 스페이스
@@ -252,6 +256,7 @@ log-guru의 A to Z 센터라인 웨이포인트 110점에 **곡률 균등화(K19
 │   ├── presentation_script.md         <- 발표 대본
 │   ├── physical_tuning_log.md         <- 실차 스로틀 스윕 기록
 │   ├── evaluation_results.md          <- 시뮬 평가 실측 전체
+│   ├── hyperparameters.md             <- epochs 3, discount 0.995 등의 근거
 │   ├── physical_ai_basics.md          <- Physical AI · 강화학습 배경
 │   ├── created_models_log.md          <- 생성한 모델 전체 기록
 │   ├── champion_strategies.md         <- 챔피언 기법 배경 지식
